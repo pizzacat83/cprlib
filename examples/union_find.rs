@@ -19,7 +19,7 @@ fn main() {
                 "{}",
                 match uf.same(x, y) {
                     true => "1",
-                    false => "No",
+                    false => "0",
                 }
             );
             
