@@ -1,20 +1,18 @@
-use proconio::input;
-
 #[derive(Debug)]
-struct UnionFind {
+pub struct UnionFind {
     parent: Vec<Option<usize>>,
     rank: Vec<usize>,
 }
 
 impl UnionFind {
-    fn new(size: usize) -> UnionFind {
+    pub fn new(size: usize) -> UnionFind {
         return UnionFind {
             parent: vec![None; size],
             rank: vec![0; size],
         }
     }
 
-    fn unite(&mut self, x: usize, y: usize) {
+    pub fn unite(&mut self, x: usize, y: usize) {
         let x_root = self.find_root(x);
         let y_root = self.find_root(y);
 
@@ -42,7 +40,7 @@ impl UnionFind {
         }
     }
     
-    fn same(&mut self, x: usize, y: usize) -> bool {
+    pub fn same(&mut self, x: usize, y: usize) -> bool {
         return self.find_root(x) == self.find_root(y);
     }
 }
