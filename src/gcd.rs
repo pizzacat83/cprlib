@@ -11,6 +11,6 @@ fn calc_gcd_rec(a: u64, b: u64) -> u64 {
     calc_gcd_rec(b % a, a)
 }
 
-pub fn calc_gcd_multi<'a, Iter: Iterator<Item = &'a u64>>(iter: Iter) -> u64 {
-    iter.map(|&a| a).fold(0, calc_gcd)
+pub fn calc_gcd_multi<Iter: Iterator<Item = u64>>(iter: Iter) -> u64 {
+    iter.fold(0, calc_gcd)
 }
