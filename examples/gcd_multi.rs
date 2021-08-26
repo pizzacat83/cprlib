@@ -1,4 +1,4 @@
-// verification-helper: PROBLEM https://onlinejudge.u-aizu.ac.jp/challenges/search/titles/1009
+// verification-helper: PROBLEM https://onlinejudge.u-aizu.ac.jp/problems/1009
 
 fn main() {
     loop {
