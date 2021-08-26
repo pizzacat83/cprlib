@@ -21,3 +21,43 @@ pub fn calc_gcd_multi<U, Iter>(iter: Iter) -> U
 {
     iter.fold(U::zero(), calc_gcd)
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_calc_gcd() {
+        test_calc_gcd_helper(24, 39, 3);
+        test_calc_gcd_helper(35, 55, 5);
+        test_calc_gcd_helper(6, 35, 1);
+    }
+
+    fn test_calc_gcd_helper(a: u64, b: u64, expected: u64) {
+        assert_eq!(
+            calc_gcd(a, b),
+            expected,
+            "calc_gcd({}, {}) != {}",
+            a,
+            b,
+            expected,
+        );
+    }
+
+    #[test]
+    fn test_calc_gcd_multi() {
+        test_calc_gcd_multi_helper(vec![24, 54, 39], 3);
+        test_calc_gcd_multi_helper(vec![20, 30, 45], 5);
+        test_calc_gcd_multi_helper(vec![6], 6);
+    }
+
+    fn test_calc_gcd_multi_helper(nums: Vec<u64>, expected: u64) {
+        assert_eq!(
+            calc_gcd_multi(nums.iter().map(|&a| a)),
+            expected,
+            "calc_gcd_multi({:?}) != {}",
+            nums,
+            expected,
+        );
+    }
+}
