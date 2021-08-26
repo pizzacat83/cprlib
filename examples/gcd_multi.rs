@@ -3,7 +3,10 @@
 fn main() {
     loop {
         let mut line = String::new();
-        if std::io::stdin().read_line(&mut line).is_err() {
+        if std::io::stdin().read_line(&mut line)
+            .map(|bytes| bytes == 0)
+            .unwrap_or(false)
+        {
             break;
         }
         let nums = line
