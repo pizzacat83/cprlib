@@ -43,4 +43,4 @@ jobs:
     #     use-tool-cache: true
 
     - name: Run tests
-      run: oj-verify run
+      run: oj-verify run --jobs=10
