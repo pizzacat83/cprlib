@@ -45,6 +45,9 @@ impl BinomTable {
     }
 
     pub fn inv(&mut self, k: u64) -> Mod64 {
+        if k == 0 {
+            panic!("BinomTable: 0 is not invertible");
+        }
         self.fill_table(k);
         let inv = self.fact_inv_table[k as usize];
 
