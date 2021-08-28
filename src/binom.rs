@@ -1,5 +1,7 @@
 use crate::mod64::Mod64;
 
+// 二項係数というより、Mod64 周りのユーティリティ集かもしれない。
+
 pub struct BinomTable {
     modulo: u64,
     len: usize,
@@ -40,6 +42,20 @@ impl BinomTable {
             self.len = self.inv_table.len();
         }
         self.check_sanity();
+    }
+
+    pub fn inv(&mut self, k: u64) -> Mod64 {
+        self.fill_table(k);
+        let inv = self.fact_inv_table[k as usize];
+
+        debug_assert_eq!(inv * Mod64::new(k, self.modulo), Mod64::new(1, self.modulo));
+
+        inv
+    }
+
+    pub fn fact(&mut self, k: u64) -> Mod64 {
+        self.fill_table(k);
+        return self.fact_table[k as usize];
     }
 
     pub fn fact_inv(&mut self, k: u64) -> Mod64 {
