@@ -1,12 +1,12 @@
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-struct Mod64 {
+pub struct Mod64 {
     value: u64,
     modulo: u64,
 }
 
 impl Mod64 {
-    fn new(value: u64, modulo: u64) -> Self {
+    pub fn new(value: u64, modulo: u64) -> Self {
         Self {
             value: value % modulo,
             modulo: modulo,
@@ -18,7 +18,7 @@ impl Mod64 {
         // iter.product に引数を追加することはできない
     // しょうがないのでここで提供
     // まあ、代数的データ型を使って Mod64::One の四則演算を実装したらなんとかなるんだけど、めんどくさすぎる
-    fn product<I>(iter: I, modulo: u64) -> Self 
+    pub fn product<I>(iter: I, modulo: u64) -> Self 
     where I: Iterator<Item = Self> {
         iter.fold(Mod64::new(1, modulo), |a, b| a * b)
     }
