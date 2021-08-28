@@ -75,6 +75,14 @@ impl BinomTable {
         return res;
     }
 
+    /// O(1) で nCk を計算
+    /// ただし前計算 O(n)
+    pub fn binom_const(&mut self, n: u64, k: u64) -> Mod64 {
+        let res = self.fact(n) * self.fact_inv(n-k) * self.fact_inv(k);
+        self.check_sanity();
+        return res;
+    }
+
     fn check_sanity(&self) {
         debug_assert_eq!(self.len, self.inv_table.len());
         debug_assert_eq!(self.len, self.fact_table.len());
