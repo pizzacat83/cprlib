@@ -75,10 +75,8 @@ impl BinomTable {
     }
 
     fn check_sanity(&self) {
-        if cfg!(debug_assertions) {
-            assert_eq!(self.len, self.inv_table.len());
-            assert_eq!(self.len, self.fact_table.len());
-            assert_eq!(self.len, self.fact_inv_table.len());
-        }
+        debug_assert_eq!(self.len, self.inv_table.len());
+        debug_assert_eq!(self.len, self.fact_table.len());
+        debug_assert_eq!(self.len, self.fact_inv_table.len());
     }
 }

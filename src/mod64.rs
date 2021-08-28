@@ -27,9 +27,7 @@ impl Mod64 {
 impl std::ops::Add for Mod64 {
     type Output = Mod64;
     fn add(self, other: Mod64) -> Mod64 {
-        if cfg!(debug_assertions) {
-            assert_eq!(self.modulo, other.modulo, "Mod64: different modulo");
-        }
+        debug_assert_eq!(self.modulo, other.modulo, "Mod64: different modulo");
         Mod64::new(self.value + other.value, self.modulo)
     }
 }
@@ -54,9 +52,7 @@ impl std::ops::Mul for Mod64 {
     type Output = Mod64;
 
     fn mul(self, other: Mod64) -> Mod64 {
-        if cfg!(debug_assertions) {
-            assert_eq!(self.modulo, other.modulo, "Mod64: different modulo");
-        }
+        debug_assert_eq!(self.modulo, other.modulo, "Mod64: different modulo");
         Mod64::new(self.value * other.value, self.modulo)
     }
 }
