@@ -23,7 +23,12 @@ impl BinomTable {
         table
     }
 
-    // 追加で additional 個の要素が入るように reserve
+    /**
+     * 追加で additional 個の要素が入るように reserve
+     * 
+     * 各種関数はいい感じに reserve をするので、
+     * あんまり神経質に手動 reserve をする必要はない
+     */
     pub fn reserve(&mut self, additional: usize) {
         self.inv_table.reserve(additional);
         self.fact_table.reserve(additional);
@@ -31,7 +36,12 @@ impl BinomTable {
         self.check_sanity();
     }
 
-    // 現在の要素数に関係なく、total 個の要素が入るように reserve
+    /**
+     * 現在の要素数に関係なく、total 個の要素が入るように reserve
+     * 
+     * 各種関数はいい感じに reserve をするので、
+     * あんまり神経質に手動 reserve をする必要はない
+     */
     pub fn reserve_total(&mut self, total: usize) {
         if total > self.len {
             self.reserve(total - self.len);
@@ -86,8 +96,10 @@ impl BinomTable {
         return res;
     }
 
-    /// O(1) で nCk を計算
-    /// ただし前計算 O(n)
+    /**
+     * O(1) で nCk を計算  
+     * ただし前計算 O(n)
+     */
     pub fn binom_const(&mut self, n: u64, k: u64) -> Mod64 {
         let res = self.fact(n) * self.fact_inv(n-k) * self.fact_inv(k);
         self.check_sanity();
