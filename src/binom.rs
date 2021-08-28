@@ -50,7 +50,7 @@ impl BinomTable {
 
     fn fill_table(&mut self, k: u64) {
         if self.len < k as usize + 1 {
-            self.reserve(k as usize);
+            self.reserve(k as usize + 1);
             for i in self.len as u64..=k {
                 let inv = -self.inv_table[(self.modulo % i) as usize] * Mod64::new(self.modulo / i, self.modulo);
                 self.inv_table.push(inv);
