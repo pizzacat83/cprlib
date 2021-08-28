@@ -23,10 +23,11 @@ impl BinomTable {
         table
     }
 
-    pub fn reserve(&mut self, size: usize) {
-        self.inv_table.reserve(size);
-        self.fact_table.reserve(size);
-        self.fact_inv_table.reserve(size);
+    // 追加で additional 個の要素が入るように reserve
+    pub fn reserve(&mut self, additional: usize) {
+        self.inv_table.reserve(additional);
+        self.fact_table.reserve(additional);
+        self.fact_inv_table.reserve(additional);
         self.check_sanity();
     }
 
