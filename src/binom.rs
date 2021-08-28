@@ -31,9 +31,16 @@ impl BinomTable {
         self.check_sanity();
     }
 
+    // 現在の要素数に関係なく、total 個の要素が入るように reserve
+    pub fn reserve_total(&mut self, total: usize) {
+        if total > self.len {
+            self.reserve(total - self.len);
+        }
+    }
+
     fn fill_table(&mut self, k: u64) {
         if self.len < k as usize + 1 {
-            self.reserve(k as usize + 1 - self.len);
+            self.reserve(k as usize);
             for i in self.len as u64..=k {
                 let inv = -self.inv_table[(self.modulo % i) as usize] * Mod64::new(self.modulo / i, self.modulo);
                 self.inv_table.push(inv);
