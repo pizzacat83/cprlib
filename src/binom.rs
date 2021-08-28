@@ -63,7 +63,8 @@ impl BinomTable {
         return self.fact_inv_table[k as usize];
     }
 
-    pub fn binom(&mut self, n: u64, k: u64) -> Mod64 {
+    /// O(k) で nCk を計算
+    pub fn binom_linear(&mut self, n: u64, k: u64) -> Mod64 {
         let res =
             Mod64::product(
                 (n-k+1..=n).map(|i| Mod64::new(i, self.modulo)),
