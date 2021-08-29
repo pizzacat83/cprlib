@@ -14,6 +14,6 @@ fn main() {
     let mut binom = BinomTable::new(modular);
 
     for &(n, k) in queries.iter() {
-        println!("{}", binom.binom_linear(n, k).value);
+        println!("{}", binom.binom_const(n, k).value);
     }
 }
