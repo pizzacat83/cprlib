@@ -66,6 +66,8 @@ mod tests {
         let x = Mod64::new(5, 3);
         assert_eq!(x.value, 2);
         assert_eq!(x.modulo, 3);
+
+        assert_eq!(Mod64::new(3, 3).value, 0);
     }
 
     #[test]
