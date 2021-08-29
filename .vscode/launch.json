@@ -1,0 +1,171 @@
+{
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in library 'cprlib'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--lib",
+                    "--package=cprlib"
+                ],
+                "filter": {
+                    "name": "cprlib",
+                    "kind": "lib"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug executable 'cprlib'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--bin=cprlib",
+                    "--package=cprlib"
+                ],
+                "filter": {
+                    "name": "cprlib",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in executable 'cprlib'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--bin=cprlib",
+                    "--package=cprlib"
+                ],
+                "filter": {
+                    "name": "cprlib",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug example 'union_find'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--example=union_find",
+                    "--package=cprlib"
+                ],
+                "filter": {
+                    "name": "union_find",
+                    "kind": "example"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in example 'union_find'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--example=union_find",
+                    "--package=cprlib"
+                ],
+                "filter": {
+                    "name": "union_find",
+                    "kind": "example"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug example 'gcd_pair'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--example=gcd_pair",
+                    "--package=cprlib"
+                ],
+                "filter": {
+                    "name": "gcd_pair",
+                    "kind": "example"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in example 'gcd_pair'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--example=gcd_pair",
+                    "--package=cprlib"
+                ],
+                "filter": {
+                    "name": "gcd_pair",
+                    "kind": "example"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug example 'gcd_multi'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--example=gcd_multi",
+                    "--package=cprlib"
+                ],
+                "filter": {
+                    "name": "gcd_multi",
+                    "kind": "example"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in example 'gcd_multi'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--example=gcd_multi",
+                    "--package=cprlib"
+                ],
+                "filter": {
+                    "name": "gcd_multi",
+                    "kind": "example"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        }
+    ]
+}

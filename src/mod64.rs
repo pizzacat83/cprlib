@@ -1,0 +1,114 @@
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct Mod64 {
+    pub value: u64,
+    pub modulo: u64,
+}
+
+impl Mod64 {
+    pub fn new(value: u64, modulo: u64) -> Self {
+        Self {
+            value: value % modulo,
+            modulo: modulo,
+        }
+    }
+
+    // 要素が0個の場合の対応が難しいので、iter.product() メソッドの実装が厳しい
+        // Mod64(1) を返すべきなのだが、要素が0個なので modulo がわからない
+        // iter.product に引数を追加することはできない
+    // しょうがないのでここで提供
+    // まあ、代数的データ型を使って Mod64::One の四則演算を実装したらなんとかなるんだけど、めんどくさすぎる
+    pub fn product<I>(iter: I, modulo: u64) -> Self 
+    where I: Iterator<Item = Self> {
+        iter.fold(Mod64::new(1, modulo), |a, b| a * b)
+    }
+
+    // num::pow::pow に繰り返し二乗法があるのだが、これも Mod64(1) を要求されるので厳しい
+    /// self の expo 乗 (`self ** expo`)
+    pub fn pow(self, expo: u64) -> Self {
+        if expo == 0 {
+            Mod64::new(1, self.modulo)
+        } else {
+            let half = self.pow(expo/2);
+            half * half * if expo % 2 == 1 { self } else { Mod64::new(1, self.modulo) }
+        }
+    }
+}
+
+impl std::ops::Add for Mod64 {
+    type Output = Mod64;
+    fn add(self, other: Mod64) -> Mod64 {
+        debug_assert_eq!(self.modulo, other.modulo, "Mod64: different modulo");
+        Mod64::new(self.value + other.value, self.modulo)
+    }
+}
+
+impl std::ops::Neg for Mod64 {
+    type Output = Mod64;
+
+    fn neg(self) -> Mod64 {
+        Mod64::new(self.modulo - self.value, self.modulo)
+    }
+}
+ 
+impl std::ops::Sub for Mod64 {
+    type Output = Mod64;
+
+    fn sub(self, other: Mod64) -> Mod64 {
+        self + (-other)
+    }
+}
+
+impl std::ops::Mul for Mod64 {
+    type Output = Mod64;
+
+    fn mul(self, other: Mod64) -> Mod64 {
+        debug_assert_eq!(self.modulo, other.modulo, "Mod64: different modulo");
+        Mod64::new(self.value * other.value, self.modulo)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn new() {
+        let x = Mod64::new(5, 3);
+        assert_eq!(x.value, 2);
+        assert_eq!(x.modulo, 3);
+
+        assert_eq!(Mod64::new(3, 3).value, 0);
+    }
+
+    #[test]
+    fn add() {
+        assert_eq!(Mod64::new(3, 5) + Mod64::new(4, 5), Mod64::new(7, 5));
+    }
+
+    #[test]
+    fn neg() {
+        assert_eq!(-Mod64::new(3, 5), Mod64::new(2, 5));
+    }
+
+    #[test]
+    fn sub() {
+        assert_eq!(Mod64::new(4, 5) - Mod64::new(2, 5), Mod64::new(2, 5));
+        assert_eq!(Mod64::new(2, 5) - Mod64::new(4, 5), Mod64::new(3, 5));
+    }
+
+    #[test]
+    fn mul() {
+        assert_eq!(Mod64::new(2, 5) * Mod64::new(3, 5), Mod64::new(6, 5));
+    }
+
+    #[test]
+    fn product() {
+        assert_eq!(Mod64::product((1..=5).map(|i| Mod64::new(i, 7)), 7), Mod64::new(120, 7));
+    }
+
+    #[test]
+    fn pow() {
+        assert_eq!(Mod64::new(2, 5).pow(10), Mod64::new(1024, 5));
+    }
+}
