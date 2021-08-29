@@ -93,6 +93,11 @@ impl BinomTable {
     /// O(k) で nCk を計算
     // nCk は Z/nZ の上で well-defined ではないので、引数は u64
     pub fn binom_linear(&mut self, n: u64, k: u64) -> Mod64 {
+        let k = if k < n/2 { k } else { n - k };
+        self.binom_linear_inner(n, k)
+    }
+
+    fn binom_linear_inner(&mut self, n: u64, k: u64) -> Mod64 {
         let res =
             Mod64::product(
                 (n-k+1..=n).map(|i| self.to_mod64(i)),
@@ -100,7 +105,7 @@ impl BinomTable {
             )
             * self.fact_inv(k);
         self.check_sanity();
-        return res;
+        res
     }
 
     /**
@@ -148,14 +153,16 @@ mod tests {
     fn binom_const() {
         let mut table = BinomTable::new(7);
 
-        assert_eq!(table.binom_const(4, 2), Mod64::new(6, 7));
+        assert_eq!(table.binom_const(5, 2), Mod64::new(10, 7));
+        assert_eq!(table.binom_const(5, 3), Mod64::new(10, 7));
     }
 
     #[test]
     fn binom_linear() {
         let mut table = BinomTable::new(7);
 
-        assert_eq!(table.binom_linear(4, 2), Mod64::new(6, 7));
+        assert_eq!(table.binom_linear(5, 2), Mod64::new(10, 7));
+        assert_eq!(table.binom_linear(5, 3), Mod64::new(10, 7));
     }
 }
 
