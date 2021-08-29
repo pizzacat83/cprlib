@@ -22,6 +22,17 @@ impl Mod64 {
     where I: Iterator<Item = Self> {
         iter.fold(Mod64::new(1, modulo), |a, b| a * b)
     }
+
+    // num::pow::pow に繰り返し二乗法があるのだが、これも Mod64(1) を要求されるので厳しい
+    /// self の expo 乗 (`self ** expo`)
+    pub fn pow(self, expo: u64) -> Self {
+        if expo == 0 {
+            Mod64::new(1, self.modulo)
+        } else {
+            let half = self.pow(expo/2);
+            half * half * if expo % 2 == 1 { self } else { Mod64::new(1, self.modulo) }
+        }
+    }
 }
 
 impl std::ops::Add for Mod64 {
@@ -94,5 +105,10 @@ mod tests {
     #[test]
     fn product() {
         assert_eq!(Mod64::product((1..=5).map(|i| Mod64::new(i, 7)), 7), Mod64::new(120, 7));
+    }
+
+    #[test]
+    fn pow() {
+        assert_eq!(Mod64::new(2, 5).pow(10), Mod64::new(1024, 5));
     }
 }
