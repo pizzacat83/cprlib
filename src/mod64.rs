@@ -58,7 +58,7 @@ impl std::ops::Mul for Mod64 {
 }
 
 #[cfg(test)]
-mod tests_mod64 {
+mod tests {
     use super::*;
 
     #[test]
