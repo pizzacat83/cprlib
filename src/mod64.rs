@@ -1,8 +1,8 @@
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct Mod64 {
-    value: u64,
-    modulo: u64,
+    pub value: u64,
+    pub modulo: u64,
 }
 
 impl Mod64 {
