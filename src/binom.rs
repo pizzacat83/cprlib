@@ -71,7 +71,7 @@ impl BinomTable {
             panic!("BinomTable: 0 is not invertible");
         }
         self.fill_table(k.value);
-        let inv = self.fact_inv_table[k.value as usize];
+        let inv = self.inv_table[k.value as usize];
 
         debug_assert_eq!(inv * k, self.to_mod64(1));
 
@@ -120,3 +120,15 @@ impl BinomTable {
         debug_assert_eq!(self.len, self.fact_inv_table.len());
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn inv() {
+        let mut table = BinomTable::new(5);
+        assert_eq!(table.inv(Mod64::new(3, 5)), Mod64::new(2, 5));
+    }
+}
+
