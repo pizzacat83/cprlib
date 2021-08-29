@@ -94,11 +94,9 @@ impl BinomTable {
     /// O(min{k, modular}) で k! を計算
     // Z/nZ の上で well-defined ではないので、引数は u64
     pub fn fact(&mut self, k: u64) -> Mod64 {
-        let round = k / self.modulo;
         let rest = k % self.modulo;
-        if round > 0 {
-            self.fill_table_complete();
-            return self.fact_table[self.modulo as usize - 1].pow(round) * self.fact_table[rest as usize];
+        if k >= self.modulo {
+            return Mod64::new(0, self.modulo);
         } else {
             self.fill_table(rest);
             return self.fact_table[rest as usize];
@@ -108,11 +106,9 @@ impl BinomTable {
     /// O(min{k, modular}) で k! の逆元を計算
     // Z/nZ の上で well-defined ではないので、引数は u64
     pub fn fact_inv(&mut self, k: u64) -> Mod64 {
-        let round = k / self.modulo;
         let rest = k % self.modulo;
-        if round > 0 {
-            self.fill_table_complete();
-            return self.fact_inv_table[self.modulo as usize - 1].pow(round) * self.fact_inv_table[rest as usize];
+        if k >= self.modulo {
+            panic!("Mod64::fact_inv: Factorial over modulo === 0 and thus not invertible.")
         } else {
             self.fill_table(rest);
             return self.fact_inv_table[rest as usize];
@@ -122,6 +118,9 @@ impl BinomTable {
     /// O(k) で nCk を計算
     // nCk は Z/nZ の上で well-defined ではないので、引数は u64
     pub fn binom_linear(&mut self, n: u64, k: u64) -> Mod64 {
+        if k >= self.modulo {
+            todo!();
+        }
         let k = if k < n/2 { k } else { n - k };
         self.binom_linear_inner(n, k)
     }
@@ -139,10 +138,13 @@ impl BinomTable {
 
     /**
      * O(1) で nCk を計算  
-     * ただし前計算 O(min{n, modular})
+     * ただし前計算 O(n)
      */
     // nCk は Z/nZ の上で well-defined ではないので、引数は u64
     pub fn binom_const(&mut self, n: u64, k: u64) -> Mod64 {
+        if k >= self.modulo {
+            todo!();
+        }
         let res = self.fact(n) * self.fact_inv(n-k) * self.fact_inv(k);
         self.check_sanity();
         return res;
@@ -169,6 +171,7 @@ mod tests {
     fn fact() {
         let mut table = BinomTable::new(5);
         assert_eq!(table.fact(4), Mod64::new(24, 5));
+        assert_eq!(table.fact(10), Mod64::new(3628800, 5));
     }
 
     #[test]
@@ -184,6 +187,13 @@ mod tests {
 
         assert_eq!(table.binom_const(5, 2), Mod64::new(10, 7));
         assert_eq!(table.binom_const(6, 4), Mod64::new(15, 7));
+    }
+
+    #[test]
+    #[ignore = "not yet implemented"]
+    fn binom_const_large() {
+        let mut table = BinomTable::new(5);
+        assert_eq!(table.binom_const(11, 5), Mod64::new(462, 5));
     }
 
     #[test]
