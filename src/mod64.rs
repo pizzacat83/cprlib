@@ -62,7 +62,35 @@ mod tests_mod64 {
     use super::*;
 
     #[test]
-    fn test_product() {
+    fn new() {
+        let x = Mod64::new(5, 3);
+        assert_eq!(x.value, 2);
+        assert_eq!(x.modulo, 3);
+    }
+
+    #[test]
+    fn add() {
+        assert_eq!(Mod64::new(3, 5) + Mod64::new(4, 5), Mod64::new(7, 5));
+    }
+
+    #[test]
+    fn neg() {
+        assert_eq!(-Mod64::new(3, 5), Mod64::new(2, 5));
+    }
+
+    #[test]
+    fn sub() {
+        assert_eq!(Mod64::new(4, 5) - Mod64::new(2, 5), Mod64::new(2, 5));
+        assert_eq!(Mod64::new(2, 5) - Mod64::new(4, 5), Mod64::new(3, 5));
+    }
+
+    #[test]
+    fn mul() {
+        assert_eq!(Mod64::new(2, 5) * Mod64::new(3, 5), Mod64::new(6, 5));
+    }
+
+    #[test]
+    fn product() {
         assert_eq!(Mod64::product((1..=5).map(|i| Mod64::new(i, 7)), 7), Mod64::new(120, 7));
     }
 }
