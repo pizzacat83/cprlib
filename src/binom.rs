@@ -130,5 +130,32 @@ mod tests {
         let mut table = BinomTable::new(5);
         assert_eq!(table.inv(Mod64::new(3, 5)), Mod64::new(2, 5));
     }
+
+    #[test]
+    fn fact() {
+        let mut table = BinomTable::new(5);
+        assert_eq!(table.fact(4), Mod64::new(24, 5));
+    }
+
+    #[test]
+    fn fact_inv() {
+        let mut table = BinomTable::new(7);
+        // 4! * 5 = 24 * 5 === 3 * 5 === 1
+        assert_eq!(table.fact_inv(4), Mod64::new(5, 7));
+    }
+
+    #[test]
+    fn binom_const() {
+        let mut table = BinomTable::new(7);
+
+        assert_eq!(table.binom_const(4, 2), Mod64::new(6, 7));
+    }
+
+    #[test]
+    fn binom_linear() {
+        let mut table = BinomTable::new(7);
+
+        assert_eq!(table.binom_linear(4, 2), Mod64::new(6, 7));
+    }
 }
 
