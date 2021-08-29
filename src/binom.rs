@@ -52,9 +52,9 @@ impl BinomTable {
         if self.len < k as usize + 1 {
             self.reserve_total(k as usize + 1);
             for i in self.len as u64..=k {
-                let inv = -self.inv_table[(self.modulo % i) as usize] * Mod64::new(self.modulo / i, self.modulo);
+                let inv = -self.inv_table[(self.modulo % i) as usize] * self.to_mod64(self.modulo / i);
                 self.inv_table.push(inv);
-                self.fact_table.push(self.fact_table[(i - 1) as usize] * Mod64::new(i, self.modulo));
+                self.fact_table.push(self.fact_table[(i - 1) as usize] * self.to_mod64(i));
                 self.fact_inv_table.push(self.fact_inv_table[(i - 1) as usize] * inv);
             }
             self.len = self.inv_table.len();
@@ -62,33 +62,40 @@ impl BinomTable {
         self.check_sanity();
     }
 
-    pub fn inv(&mut self, k: u64) -> Mod64 {
-        if k == 0 {
+    fn to_mod64(&self, x: u64) -> Mod64 {
+        Mod64::new(x, self.modulo)
+    }
+
+    pub fn inv(&mut self, k: Mod64) -> Mod64 {
+        if k.value == 0 {
             panic!("BinomTable: 0 is not invertible");
         }
-        self.fill_table(k);
-        let inv = self.fact_inv_table[k as usize];
+        self.fill_table(k.value);
+        let inv = self.fact_inv_table[k.value as usize];
 
-        debug_assert_eq!(inv * Mod64::new(k, self.modulo), Mod64::new(1, self.modulo));
+        debug_assert_eq!(inv * k, self.to_mod64(1));
 
         inv
     }
 
+    // Z/nZ の上で well-defined ではないので、引数は u64
     pub fn fact(&mut self, k: u64) -> Mod64 {
         self.fill_table(k);
         return self.fact_table[k as usize];
     }
 
+    // Z/nZ の上で well-defined ではないので、引数は u64
     pub fn fact_inv(&mut self, k: u64) -> Mod64 {
         self.fill_table(k);
         return self.fact_inv_table[k as usize];
     }
 
     /// O(k) で nCk を計算
+    // nCk は Z/nZ の上で well-defined ではないので、引数は u64
     pub fn binom_linear(&mut self, n: u64, k: u64) -> Mod64 {
         let res =
             Mod64::product(
-                (n-k+1..=n).map(|i| Mod64::new(i, self.modulo)),
+                (n-k+1..=n).map(|i| self.to_mod64(i)),
                 self.modulo,
             )
             * self.fact_inv(k);
@@ -100,6 +107,7 @@ impl BinomTable {
      * O(1) で nCk を計算  
      * ただし前計算 O(n)
      */
+    // nCk は Z/nZ の上で well-defined ではないので、引数は u64
     pub fn binom_const(&mut self, n: u64, k: u64) -> Mod64 {
         let res = self.fact(n) * self.fact_inv(n-k) * self.fact_inv(k);
         self.check_sanity();
