@@ -1,4 +1,5 @@
 use crate::mod64::Mod64;
+use std::cmp::min;
 
 // 二項係数というより、Mod64 周りのユーティリティ集かもしれない。
 
@@ -49,6 +50,8 @@ impl BinomTable {
     }
 
     fn fill_table(&mut self, k: u64) {
+        // [modulo] 以降は要らない
+        let k = min(k, self.modulo);
         if self.len < k as usize + 1 {
             self.reserve_total(k as usize + 1);
             for i in self.len as u64..=k {
@@ -62,10 +65,20 @@ impl BinomTable {
         self.check_sanity();
     }
 
+    fn fill_table_complete(&mut self) {
+        self.fill_table(self.modulo - 1);
+    }
+
     fn to_mod64(&self, x: u64) -> Mod64 {
         Mod64::new(x, self.modulo)
     }
 
+    /**
+     * O(1) で k の逆元を計算  
+     * ただし前計算 O(k)
+     * 
+     * 前計算の元が取れない場合は互除法 O(log k) がおすすめ
+     */
     pub fn inv(&mut self, k: Mod64) -> Mod64 {
         if k.value == 0 {
             panic!("BinomTable: 0 is not invertible");
@@ -78,16 +91,32 @@ impl BinomTable {
         inv
     }
 
+    /// O(min{k, modular}) で k! を計算
     // Z/nZ の上で well-defined ではないので、引数は u64
     pub fn fact(&mut self, k: u64) -> Mod64 {
-        self.fill_table(k);
-        return self.fact_table[k as usize];
+        let round = k / self.modulo;
+        let rest = k % self.modulo;
+        if round > 0 {
+            self.fill_table_complete();
+            return self.fact_table[self.modulo as usize - 1].pow(round) * self.fact_table[rest as usize];
+        } else {
+            self.fill_table(rest);
+            return self.fact_table[rest as usize];
+        }
     }
 
+    /// O(min{k, modular}) で k! の逆元を計算
     // Z/nZ の上で well-defined ではないので、引数は u64
     pub fn fact_inv(&mut self, k: u64) -> Mod64 {
-        self.fill_table(k);
-        return self.fact_inv_table[k as usize];
+        let round = k / self.modulo;
+        let rest = k % self.modulo;
+        if round > 0 {
+            self.fill_table_complete();
+            return self.fact_inv_table[self.modulo as usize - 1].pow(round) * self.fact_inv_table[rest as usize];
+        } else {
+            self.fill_table(rest);
+            return self.fact_inv_table[rest as usize];
+        }
     }
 
     /// O(k) で nCk を計算
@@ -110,7 +139,7 @@ impl BinomTable {
 
     /**
      * O(1) で nCk を計算  
-     * ただし前計算 O(n)
+     * ただし前計算 O(min{n, modular})
      */
     // nCk は Z/nZ の上で well-defined ではないので、引数は u64
     pub fn binom_const(&mut self, n: u64, k: u64) -> Mod64 {
@@ -154,7 +183,7 @@ mod tests {
         let mut table = BinomTable::new(7);
 
         assert_eq!(table.binom_const(5, 2), Mod64::new(10, 7));
-        assert_eq!(table.binom_const(5, 3), Mod64::new(10, 7));
+        assert_eq!(table.binom_const(6, 4), Mod64::new(15, 7));
     }
 
     #[test]
@@ -162,7 +191,7 @@ mod tests {
         let mut table = BinomTable::new(7);
 
         assert_eq!(table.binom_linear(5, 2), Mod64::new(10, 7));
-        assert_eq!(table.binom_linear(5, 3), Mod64::new(10, 7));
+        assert_eq!(table.binom_linear(6, 4), Mod64::new(15, 7));
     }
 }
 
